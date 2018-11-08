@@ -1,0 +1,146 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+
+
+import sys
+import os
+import commands
+import re
+
+dirname = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(dirname+'/Functions')
+import version
+
+Usage = """
+icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome 
+               with sliding window strategy
+=============================================================
+\x1b[1mUSAGE:\x1b[0m 
+  %s [modes] [options...]
+\x1b[1mHELP:\x1b[0m
+    [Prepare]
+    starbuild                   Build STAR index with GTF
+    parseGTF                    Parse GTF file to simple tab-seperated file
+    
+    [Fastq-processing]
+    readcollapse                Remove same reads from fastq file
+    trim                        Trim 5' barcode and 3' adaptor
+    cleanFq                     Remove reads map to given gemome (rRNA, mtRNA and tRNA...) from fastq with bowtie2
+    
+    [Mapping and calculate score]
+    mapGenome                   Map to genome with STAR
+    calcFPKM                    Calculate transcript FPKM with cufflinks
+    sam2tab                     Covert sam or bam to a tab-seperated file (.tab)
+    calcSHAPE                   Calculate SHAPE score with sliding window strategy to 
+                                produce a genome-based tab-seperated file (.gtab)
+    
+    [Coordination system convert]
+    genSHAPEToTransSHAPE        Convert genome-based SHAPE to transcript-based SHAPE
+    genRTBDToTransRTBD          Convert genome-based RT and BD to transcript-based RT and BD
+    genSHAPEToBedGraph          Convert genome-base SHAPE to bedGraph for visualization
+    
+    [Quanlity control]
+    readDistributionStatistic   Statistic how many reads are mapped 
+    samStatistics               Statistic where the reads mapped to with sam or bam file
+    countRT                     Count RT and BD of each replicates
+    plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT is
+    combine_gTab_SHAPE          Combine two replicate .gTab file
+    plotGenomeSHAPERepCor       Plot a boxplot to show how well the replicate SHAPE is
+
+\x1b[1mVERSION:\x1b[0m
+    %s
+
+\x1b[1mAUTHOR:\x1b[0m
+    Li Pan
+
+""" % (sys.argv[0], version.Version)
+
+def main():
+    
+    if len(sys.argv) == 1:
+        print Usage
+        exit(-1)
+    
+    mode = sys.argv[1]
+    options = " ".join(sys.argv[2:])
+    
+    if mode == 'starbuild':
+        CMD = "python %s/Functions/starbuild.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'parseGTF':
+        CMD = "parseBedFromGTF.py "+options
+        os.system(CMD)
+    
+    elif mode == 'readcollapse':
+        CMD = "python %s/Functions/readCollapse.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'trim':
+        CMD = "python %s/Functions/trimFq.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'cleanFq':
+        CMD = "python %s/Functions/cleanFq.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'mapGenome':
+        CMD = "python %s/Functions/mapGenome.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'calcFPKM':
+        CMD = "python %s/Functions/calcFPKM.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'sam2tab':
+        CMD = "%s/Functions/sam2tab " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'calcSHAPE':
+        CMD = "%s/Functions/calc_sliding_shape TrtCont " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'genSHAPEToTransSHAPE':
+        CMD = "python %s/Functions/genSHAPEToTransSHAPE.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'genRTBDToTransRTBD':
+        CMD = "python %s/Functions/genRTBDToTransRTBD.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'genSHAPEToBedGraph':
+        CMD = "python %s/Functions/genSHAPEToBedGraph.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'readDistributionStatistic':
+        CMD = "python %s/Functions/readDistributionStatistic.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'samStatistics':
+        CMD = "python %s/Functions/samStatistics.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'countRT':
+        CMD = "%s/Functions/countRT " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'plotGenomeRTRepCor':
+        CMD = "python %s/Functions/plotGenomeRTRepCor.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'combine_gTab_SHAPE':
+        CMD = "python %s/Functions/combine_gTab_SHAPE.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'plotGenomeSHAPERepCor':
+        CMD = "python %s/Functions/plotGenomeSHAPERepCor.py " % (dirname, )+options
+        os.system(CMD)
+    
+    else:
+        print >>sys.stderr, "Error: unknown mode"
+        print Usage
+        exit(-1)
+
+if __name__ == "__main__":
+    main()

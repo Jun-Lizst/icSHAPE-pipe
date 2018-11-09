@@ -34,7 +34,7 @@ Python packages:
 	export PATH=[icSHAPE-pipe]/bin:$PATH
 	```
 
-2. If your operation system is based on Linux, skip this step.
+2. If your operation system is based on Linux, skip this step. The executable files have been static compiled.
 	1. Compile PsBL library
 		
 		```bash
@@ -110,6 +110,8 @@ AUTHOR:
 ```
 
 ## Brief introduction
+
+For best understand the usage of `icSHAPE-pipe`, we strongly recommend that you run the example in the example_data directory at first.
 
 ### 1. Preparation
 

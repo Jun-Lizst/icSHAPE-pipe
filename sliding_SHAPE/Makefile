@@ -21,3 +21,12 @@ countRT: countRT.cpp sliding_shape.o
 
 sliding_shape.o: sliding_shape.cpp sliding_shape.h
 	$(CXX) -c sliding_shape.cpp $(CXXFLAGS) -o sliding_shape.o
+
+
+STATIC_FLAGS = -static -lhts -lcurl -llzma -lbz2 -lpthread -lssl -lcrypto -lz -lm -ldl -lrt -L/Share/home/zhangqf/usr/glibc-2.14/lib
+
+all-static:
+	$(CXX) sam2tab.cpp $(CXXFLAGS) -o sam2tab $(STATIC_FLAGS)
+	$(CXX) calc_sliding_shape.cpp sliding_shape.o $(CXXFLAGS) -o calc_sliding_shape $(STATIC_FLAGS)
+	$(CXX) countRT.cpp sliding_shape.o $(CXXFLAGS) -o countRT $(STATIC_FLAGS)
+

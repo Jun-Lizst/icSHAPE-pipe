@@ -30,7 +30,7 @@ Python packages:
 1. Add these lines to your `~/.bash_profile`, `[icSHAPE-pipe]` is the <b>absolute</b> path of icSHAPE-pipe.
 
 	```bash
-	export PYTHONPYTHON=[icSHAPE-pipe]/GAP:$PYTHONPYTHON
+	export PYTHONPATH=[icSHAPE-pipe]/GAP:$PYTHONPATH
 	export PATH=[icSHAPE-pipe]/GAP:$PATH
 	export PATH=[icSHAPE-pipe]/bin:$PATH
 	```

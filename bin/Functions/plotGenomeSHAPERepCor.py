@@ -16,13 +16,13 @@ plotGenomeSHAPERepCor - Calculate replicate correlation for genome RT
   %s -i inputFile -o report.pdf
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                                input countRT file record the RT (prduced by combine_gTab.py)
+                                Input countRT file record the RT (prduced by combine_gTab_SHAPE.py)
   -o                    <String>
-                                output a PDF report (default: report.pdf)
+                                Output a PDF report (default: report.pdf)
 
  More options:
   --winSize             <Int>
-                                window size for each replicate calculation (default: 100)
+                                Window size for each replicate calculation (default: 100)
 
 \x1b[1mVERSION:\x1b[0m
     %s

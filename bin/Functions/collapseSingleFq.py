@@ -14,10 +14,10 @@ collaseSingleFq - Collapse a fastq file
   %s -i input_fastq -o output_fastq --mode mode --fasta output_fasta
 \x1b[1mHELP:\x1b[0m
     --mode:             <append/new>. 
-                            append will lump reads into files in the outputdirectory with names like LIB_DMSO1.fastq, LIB_DMSO2.fastq...
-                            new will create separate files for each input file, i.e., names like LIB_DMSO1_dataset1.fastq, LIB_DMSO2_dataset1.fastq...
+                            [append] will lump reads into files in the outputdirectory with names like LIB_DMSO1.fastq, LIB_DMSO2.fastq...
+                            [new] will create separate files for each input file, i.e., names like LIB_DMSO1_dataset1.fastq, LIB_DMSO2_dataset1.fastq...
     --fasta:            <String>
-                            output corresponding fasta file
+                            Output corresponding fasta file
 
 \x1b[1mVERSION:\x1b[0m
     %s

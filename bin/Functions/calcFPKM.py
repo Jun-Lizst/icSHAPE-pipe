@@ -13,9 +13,9 @@ calcFPKM - Calculate FPKM with cufflinks
   %s [-p 1] -i mapGenome.bam -o outDir -G annotation.gtf
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                            Input a fastq file
+                            Input a sorted bam file
   -o                    <String>
-                            Output a processed fastq file
+                            Output directory
   -G                    <String>
                             Input a GTF annotation file
 

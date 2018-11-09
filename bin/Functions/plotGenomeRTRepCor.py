@@ -16,9 +16,9 @@ plotGenomeRTRepCor - Calculate replicate correlation for genome RT
   %s -i inputFile -o report.pdf --col1 4 --col2 6
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                                input countRT file record the RT (prduced by countRT)
+                                Input countRT file record the RT (prduced by countRT)
   -o                    <String>
-                                output a PDF report (default: report.pdf)
+                                Output a PDF report (default: report.pdf)
   --col1                <Int>
                                 RT column number of replicate 1 (default: 4)
   --col2                <Int>
@@ -26,9 +26,9 @@ plotGenomeRTRepCor - Calculate replicate correlation for genome RT
 
   More options:
   --minBD               <Int>
-                                minimun basedensity (default: 100)
+                                Minimun basedensity (default: 100)
   --winSize             <Int>
-                                window size for each replicate calculation (default: 100)
+                                Window size for each replicate calculation (default: 100)
 
 \x1b[1mWARNING:\x1b[0m
     Basedensity is appended after the RT column

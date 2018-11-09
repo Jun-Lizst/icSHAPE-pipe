@@ -88,7 +88,7 @@ def main():
     else:
         Bowtie_More = "--end-to-end"
     
-    CMD = """bowtie2 %s -U %s -x %s -p %s | awk '{ if(substr($0,1,1)=="@"||$2==0){print $0 > "%s"}else if($2==4){print "@"$1; print $10; print "+"; print $11;}  }' > %s"""
+    CMD = """bowtie2 %s -U %s -x %s -p %s --reorder | awk '{ if(substr($0,1,1)=="@"||$2==0){print $0 > "%s"}else if($2==4){print "@"$1; print $10; print "+"; print $11;}  }' > %s"""
     CMD = CMD % (Bowtie_More, params['inFastq'], params['index'], params['threads'], params['samFile'], params['outFastq'])
     
     print "Start to clean fastq:\n\t%s" % (CMD, )

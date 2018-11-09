@@ -44,9 +44,10 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
     readDistributionStatistic   Statistic how many reads are mapped 
     samStatistics               Statistic where the reads mapped to with sam or bam file
     countRT                     Count RT and BD of each replicates
-    plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT is
+    plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT
     combine_gTab_SHAPE          Combine two replicate .gTab file
-    plotGenomeSHAPERepCor       Plot a boxplot to show how well the replicate SHAPE is
+    plotGenomeSHAPERepCor       Plot a boxplot to show how well the replicate SHAPE
+    evaluateSHAPE               Evaluate icSHAPE with known structure
 
 \x1b[1mVERSION:\x1b[0m
     %s
@@ -135,6 +136,10 @@ def main():
     
     elif mode == 'plotGenomeSHAPERepCor':
         CMD = "python %s/Functions/plotGenomeSHAPERepCor.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'evaluateSHAPE':
+        CMD = "python %s/Functions/evaluateSHAPE.py " % (dirname, )+options
         os.system(CMD)
     
     else:

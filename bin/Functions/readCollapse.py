@@ -13,16 +13,16 @@ readCollapse - Remove duplicate reads from fastq
 \x1b[1mUSAGE:\x1b[0m
   %s -1 fastq_PE_reads_1 -2 fastq_PE_reads_2 -U fastq_SE_reads
 \x1b[1mHELP:\x1b[0m
-  -U     single ends read
-  -1     paired ends read 1
-  -2     paired ends read 2
+  -U     Single ends read
+  -1     Paired ends read 1
+  -2     Paired ends read 2
 
  More options
-  -o     single ends read output 
+  -o     Single ends read output 
   -p     PE read output 1
   -q     PE read output 2
 
-  -f     unique fasta after collapse
+  -f     Unique fasta after collapse
   -l     <1-10> barcode length (default: guess)
          Longer barcode, less memory, more time
 

@@ -15,13 +15,13 @@ genSHAPEToBedGraph - Convert tab-seperated genome SHAPE (.gTab) to bedGraph file
 
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                                input a gTab file (produced by calc_sliding_shape)
+                                Input a gTab file (produced by calc_sliding_shape)
   -t                    <Type>
-                                mode: Trt or TrtCont
+                                Mode: Trt or TrtCont
   -o                    <String>
-                                specify a path of directory to save files
+                                Specify a path of directory to save files
   -c                    <Int>
-                                minimun coverage for SHAPE (default: 200 for TrtCont and 100 for Trt)
+                                Minimun coverage for SHAPE (default: 200 for TrtCont and 100 for Trt)
 
 \x1b[1mVERSION:\x1b[0m
     %s

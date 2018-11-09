@@ -15,15 +15,15 @@ samStatistic - Report the sam or bam
   %s [-s 0.1] -i input.sam -g *.genomeCoor.bed -o report.pdf -t report.txt
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                                input a sam or bam file, each read must be output for one time
+                                Input a sam or bam file, each read must be output for one time
   -o                    <String>
-                                output statistics to PDF file (default: report.pdf)
+                                Output statistics to PDF file (default: report.pdf)
   -t                    <String>
-                                output statistics to text file (default: report.txt)
+                                Output statistics to text file (default: report.txt)
   --fast                <None>
-                                fast mode, sample reads to analysis (default: all reads will be analized)
+                                Fast mode, sample reads to analysis (default: all reads will be analized)
   -g                    <String>
-                                a genome-coor based annotation file produced by GAP: /150T/zhangqf/GenomeAnnotation/Gencode/hg38.genomeCoor.bed
+                                A genome-coor based annotation file produced by GAP: /150T/zhangqf/GenomeAnnotation/Gencode/hg38.genomeCoor.bed
 
 \x1b[1mWARNING\x1b[0m
     1. Each mapped read should be output for one time (--outSAMmultNmax 1);

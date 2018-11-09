@@ -16,21 +16,21 @@ genRTBDToTransRTBD - Convert genome tab-seperated RTBD (.gTab) to transcript-bas
 
 \x1b[1mHELP:\x1b[0m
   -i                    <String>
-                                input a genome-based SHAPE file (produced by calc_sliding_shape)
+                                Input a genome-based SHAPE file (produced by calc_sliding_shape)
   -g                    <String>
                                 Genome mode
-                                a genome-coor based annotation file produced by GAP: /150T/zhangqf/GenomeAnnotation/Gencode/hg38.genomeCoor.bed
+                                A genome-coor based annotation file produced by GAP: /150T/zhangqf/GenomeAnnotation/Gencode/hg38.genomeCoor.bed
                                 -s and -g cannot be specified at the same time
   -s                    <String>
                                 Transcript mode
-                                specify the transcript size file
+                                Specify the transcript size file
                                 -s and -g cannot be specified at the same time
   -p                    <Int>
                                 ≥1, number of processes, each process consumes the same amount of memory (default: 5)
   -c or --col           <Int Array>
-                                columns to output. Examples: -c 4,5,6... or -c 4-7,9-10...
+                                Columns to output. Examples: -c 4,5,6... or -c 4-7,9-10...
   -o                    <String>
-                                output file
+                                Output file
 
 \x1b[1mVERSION:\x1b[0m
     %s

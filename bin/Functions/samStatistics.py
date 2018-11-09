@@ -415,7 +415,7 @@ def main():
     ax4 = fig.add_subplot(grids[3, :])
     mutProf = mutProf_leading + [0, 0, 0] + mutProf_tailing
     xticks = [str(i) for i in range(1,16)] + ["", "", ""] + [str(i) for i in range(-15,0)]
-    obj = ax4.bar(x=range(len(mutProf)), height=mutProf, color='#B4B4B5')
+    obj = ax4.bar(range(len(mutProf)), mutProf, color='#B4B4B5')
     ax4.title.set_text("Nucleotide mutation profile")
     ax4.title.set_size('large')
     ax4.title.set_weight('bold')

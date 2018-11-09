@@ -8,6 +8,7 @@ cd example_data
 make uncompress
 
 ## Build index for genome
+mkdir index
 icSHAPE-pipe starbuild -i fasta/chr22.fa -o index --gtf GTF/chr22.gtf -p 20
 
 ## Covert GTF file
@@ -184,10 +185,10 @@ icSHAPE-pipe plotGenomeSHAPERepCor -i 10.quality_control/shape_combine.txt -o 10
 
 ######## 5. Evaluate icSHAPE with known 18S structure
 
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/D1-2.chr22.sam -out 10.quality_control/D1.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/D2-2.chr22.sam -out 10.quality_control/D2.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/N1-2.chr22.sam -out 10.quality_control/N1.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/N2-2.chr22.sam -out 10.quality_control/N2.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/D1.chr22.sam -out 10.quality_control/D1.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/D2.chr22.sam -out 10.quality_control/D2.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/N1.chr22.sam -out 10.quality_control/N1.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/N2.chr22.sam -out 10.quality_control/N2.rRNA.tab
 
 icSHAPE-pipe calcSHAPE \
     -D 10.quality_control/D1.rRNA.tab,10.quality_control/D2.rRNA.tab \

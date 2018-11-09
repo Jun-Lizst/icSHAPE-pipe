@@ -21,7 +21,7 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
 \x1b[1mHELP:\x1b[0m
     [Prepare]
     starbuild                   Build STAR index with GTF
-    parseGTF                    Parse GTF file to simple tab-seperated file
+    parseGTF                    Parse GTF file to simple tab-separated file
     
     [Fastq-processing]
     readcollapse                Remove same reads from fastq file
@@ -31,9 +31,9 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
     [Mapping and calculate score]
     mapGenome                   Map to genome with STAR
     calcFPKM                    Calculate transcript FPKM with cufflinks
-    sam2tab                     Covert sam or bam to a tab-seperated file (.tab)
+    sam2tab                     Convert sam or bam to a tab-separated file (.tab)
     calcSHAPE                   Calculate SHAPE score with sliding window strategy to 
-                                produce a genome-based tab-seperated file (.gtab)
+                                produce a genome-based tab-separated file (.gtab)
     
     [Coordination system convert]
     genSHAPEToTransSHAPE        Convert genome-based SHAPE to transcript-based SHAPE
@@ -41,7 +41,7 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
     genSHAPEToBedGraph          Convert genome-base SHAPE to bedGraph for visualization
     
     [Quanlity control]
-    readDistributionStatistic   Statistic how many reads are mapped 
+    readDistributionStatistic   Statistic the number of reads are mapped
     samStatistics               Statistic where the reads mapped to with sam or bam file
     countRT                     Count RT and BD of each replicates
     plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT

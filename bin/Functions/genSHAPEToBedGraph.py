@@ -8,7 +8,7 @@ import os
 import version
 
 Usage = """
-genSHAPEToBedGraph - Convert tab-seperated genome SHAPE (.gTab) to bedGraph files
+genSHAPEToBedGraph - Convert tab-separated genome SHAPE (.gTab) to bedGraph files
 ================================================================================
 \x1b[1mUSAGE:\x1b[0m 
   %s -i input.gTab -t TrtCont -o out_file

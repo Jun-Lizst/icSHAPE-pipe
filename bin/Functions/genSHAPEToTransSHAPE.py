@@ -9,7 +9,7 @@ import os
 import version
 
 Usage = """
-genSHAPEToTransSHAPE - Convert genome tab-seperated SHAPE (.gTab) to transcript-based SHAPE
+genSHAPEToTransSHAPE - Convert genome tab-separated SHAPE (.gTab) to transcript-based SHAPE
 ===========================================================================================
 \x1b[1mUSAGE:\x1b[0m 
   %s [-g genomeCoor.bed | -s genomeSize] -i input.gTab -o out_file

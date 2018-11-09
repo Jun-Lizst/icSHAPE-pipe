@@ -9,7 +9,7 @@ import os
 import version
 
 Usage = """
-genRTBDToTransRTBD - Convert genome tab-seperated RTBD (.gTab) to transcript-based RTBD
+genRTBDToTransRTBD - Convert genome tab-separated RTBD (.gTab) to transcript-based RTBD
 =======================================================================================
 \x1b[1mUSAGE:\x1b[0m 
   %s [-g genomeCoor.bed | -s genomeSize] -i input.tab -o out_file

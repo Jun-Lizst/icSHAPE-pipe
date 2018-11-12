@@ -57,8 +57,50 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
 
 """ % (sys.argv[0], version.Version)
 
+
+def checkPythonMod(mod):
+    from imp import find_module
+    try:
+        op = find_module(mod)
+        return True
+    except ImportError:
+        return False
+
+def check_requirements():
+    import distutils.spawn
+        
+    bowtie2 = distutils.spawn.find_executable("bowtie2")
+    STAR = distutils.spawn.find_executable("STAR")
+    cufflinks = distutils.spawn.find_executable("cufflinks")
+    samtools = distutils.spawn.find_executable("samtools")
+    
+    pysam = checkPythonMod("pysam")
+    numpy = checkPythonMod("numpy")
+    pandas = checkPythonMod("pandas")
+    matplotlib = checkPythonMod("matplotlib")
+    
+    if not bowtie2:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> bowtie2 is not in your PATH <===== \x1b[0m"
+    if not STAR:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> STAR is not in your PATH <===== \x1b[0m"
+    if not cufflinks:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> cufflinks is not in your PATH <===== \x1b[0m"
+    if not samtools:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> samtools is not in your PATH <===== \x1b[0m"
+    
+    if not pysam:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> pysam package is not installed <===== \x1b[0m"
+    if not numpy:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> numpy package is not installed <===== \x1b[0m"
+    if not cufflinks:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> cufflinks package is not installed <===== \x1b[0m"
+    if not matplotlib:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> matplotlib package is not installed <===== \x1b[0m"
+
+
 def main():
     
+    check_requirements()
     if len(sys.argv) == 1:
         print Usage
         exit(-1)

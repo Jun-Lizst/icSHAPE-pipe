@@ -192,6 +192,8 @@ def estimateSplit(inputFile):
     import math
     
     fileSize = os.path.getsize(inputFile)
+    if inputFile.endswith(".gz"):
+        fileSize *= 5
     
     pos = 1
     length = int( math.log(fileSize/1000000000.0, 4.0) )
@@ -202,6 +204,7 @@ def estimateSplit(inputFile):
     line = IN.readline; line = IN.readline()
     IN.close()
     readLen = len(line)
+    length = min(length, 4)
     if readLen <= 10:
         length = 0
     else:

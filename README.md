@@ -21,6 +21,8 @@ Python packages:
 
 <b>cufflinks</b>: http://cole-trapnell-lab.github.io/cufflinks/
 
+<b>samtools</b>: http://www.htslib.org/download/
+
 <b>GNU GCC</b> > 4.7 (not required for Linux)
 
 <b>libhts</b>: http://www.htslib.org (not required for Linux)

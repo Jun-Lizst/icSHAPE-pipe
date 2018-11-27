@@ -64,7 +64,7 @@ Python packages:
 3. Make sure these files are excutable
 	
 	```bash
-	chmod +x [icSHAPE-pipe]/parseBedFromGTF.py
+	chmod +x [icSHAPE-pipe]/GAP/parseBedFromGTF.py
 	chmod +x [icSHAPE-pipe]/bin/Functions/sam2tab
 	chmod +x [icSHAPE-pipe]/bin/Functions/calc_sliding_shape
 	chmod +x [icSHAPE-pipe]/bin/Functions/countRT

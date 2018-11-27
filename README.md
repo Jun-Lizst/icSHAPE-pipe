@@ -14,6 +14,7 @@ Python packages:
 * <b>numpy</b>: http://www.numpy.org
 * <b>pandas</b>: https://pypi.org/project/pandas/
 * <b>matplotlib</b>: https://pypi.org/project/matplotlib/
+* <b>seaborn</b>: https://seaborn.pydata.org
 
 <b>Bowtie2</b>: http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 
@@ -71,7 +72,7 @@ Python packages:
 
 ## Framework
 
-<center> <img src="images/pipeline.png " /> </center>
+<img src="images/pipeline.png">
 
 ### Modes
 
@@ -82,7 +83,7 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
                with sliding window strategy
 =============================================================
 USAGE: 
-  ./icSHAPE-pipe [modes] [options...]
+  /Share/home/zhangqf8/usr/icSHAPE-pipe-1.0.0/bin/icSHAPE-pipe [modes] [options...]
 HELP:
     [Prepare]
     starbuild                   Build STAR index with GTF
@@ -97,6 +98,7 @@ HELP:
     mapGenome                   Map to genome with STAR
     calcFPKM                    Calculate transcript FPKM with cufflinks
     sam2tab                     Convert sam or bam to a tab-separated file (.tab)
+    trainParameter              Train best parameters based on known structures
     calcSHAPE                   Calculate SHAPE score with sliding window strategy to 
                                 produce a genome-based tab-separated file (.gtab)
     
@@ -106,8 +108,9 @@ HELP:
     genSHAPEToBedGraph          Convert genome-base SHAPE to bedGraph for visualization
     
     [Quanlity control]
-    readDistributionStatistic   Statistic the number of reads are mapped 
+    readDistributionStatistic   Statistic the number of reads are mapped
     samStatistics               Statistic where the reads mapped to with sam or bam file
+    transSHAPEStatistics        Statistics the RNA distribution of transcript-based SHAPE
     countRT                     Count RT and BD of each replicates
     plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT
     combine_gTab_SHAPE          Combine two replicate .gTab file
@@ -136,7 +139,10 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 2. `parseGTF` convert GTF file to tab-separated file for later analysis
 	
 	```bash
+	## Parse GTF file from Gencode or Emsembl
 	icSHAPE-pipe parseGTF -g genomeGTF -o out_prefix -s gencode
+	## Parse GFF3 file from RefSeq
+	icSHAPE-pipe parseGTF -g genomeGFF3 -o out_prefix -s NCBI
 	```
 
 	It will produce two files: `out_prefix.genomeCoor.bed` and `out_prefix.genomeCoor.bed`. `out_prefix.genomeCoor.bed` will be used as input for later analysis.
@@ -155,7 +161,7 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	icSHAPE-pipe trim -i in_fastq -o out_fastq -l leading_length -a adaptor_fasta -p threads -m min_len
 	```
 
-	<center><img src="images/trimReads.png" /></center>
+	<img src="images/trimReads.png" />
 
 3. `cleanFq` remove reads mapped to a given genome (such as rRNA, tRNA and mtRNA) with <i>bowtie2</i>
 
@@ -163,7 +169,7 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	icSHAPE-pipe cleanFq -i in_fastq -o out_fastq -x exclude_genome_index -p threads --mode End_to_End --sam map.sam
 	```
 	
-	<center><img src="images/cleanFq.png" /></center>
+	<img src="images/cleanFq.png" />
 
 ### 3. Mapping and calculate score
 
@@ -188,15 +194,27 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	icSHAPE-pipe sam2tab -in in_sam -out out.tab -sort yes
 	```
 	
-	<center> <img src="images/sam2tab.png"> </center>
+	<img src="images/sam2tab.png">
 
-4. `calcSHAPE` calculates icSHAPE score with sliding window strategy
+4. `trainParameter` train best window size and substract factors based on known structures
+	
+	```
+	icSHAPE-pipe trainParameter -d human_18S.dot -D D1.rRNA.tab,D2.rRNA.tab -N N1.rRNA.tab,N2.rRNA.tab -o report_18S.pdf -s human_rRNA_tRNA_mtRNA.len
+	```
+
+	<img src="images/trainParameters.png" width="80%" /> <br>
+
+	`trainParameter` will try different substract factor (default: 0.25) and window size (default: 200) to calculate icSHAPE scores, and compare it with known structures such as 18S rRNA. `--subFac` and `--Window` tune the steps. This step may take <b>long time</b>, Default parameters are suitable in most cases.
+
+5. `calcSHAPE` calculates icSHAPE score with sliding window strategy
 	
 	```
 	icSHAPE-pipe calcSHAPE -D D_rep1.tab,D_rep2.tab -N N_rep1.tab,N_rep2.tab -size chrNameLength.txt -ijf sjdbList.fromGTF.out.tab -out out.gTab
 	```
 
-	<center><img src="images/sliding_window.png" /></center>
+	<img src="images/sliding_window.png" />
+
+	`-wsize` sets window size and `-sf` sets substract factor.
 
 ### 4. Coordination system convert
 
@@ -228,8 +246,8 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	icSHAPE-pipe readDistributionStatistic -1 raw_fastq -2 collapsed.fastq -3 trimmed.fastq -4 rem_rRNA.fastq -5 mapGenome.fastq --labels sample1
 	```
 	
-	It will generate a PDF image like this:
-	<center><img src="images/readDistributionStatistics.png" width=300 /></center>
+	It will generate a PDF image like this: <br>
+	<img src="images/readDistributionStatistics.png" width=300 />
 
 2. `samStatistics` Statistics the sam file.
 	
@@ -237,10 +255,19 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	icSHAPE-pipe samStatistics -i genome_mapped.bam -o report.pdf -t report.txt --fast -g hg38.genomeCoor.bed
 	```
 	
-	It will generate a PDF image like this:
-	<center><img src="images/samStatistics.png" width=300 /></center>
+	It will generate a PDF image like this: <br>
+	<img src="images/samStatistics.png" width=300 />
 
-3. `countRT` counts RT and BD but not calculate SHAPE score, it is used to calculate the replicate correlation.
+3. `transSHAPEStatistics ` Statistics the transcript-based file convert from genome-base file.
+	
+	```
+	icSHAPE-pipe transSHAPEStatistics -i transSHAPE.out -o report.pdf -g hg38.genomeCoor.bed
+	```
+	
+	It will generate a PDF image like this: <br>
+	<img src="images/transSHAPEStatistics.png" width=300>
+
+4. `countRT` counts RT and BD but not calculate SHAPE score, it is used to calculate the replicate correlation.
 	
 	```
 	icSHAPE-pipe countRT -in D1.tab,D2.tab,D3.tab,D4.tab -size chrNameLength.txt -ijf sjdbList.fromGTF.out.tab -out countRT.txt
@@ -256,31 +283,73 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	chr22   +       10580550        0       0       0       1       1       2       0       0
 	```
 
-4. `plotGenomeRTRepCor` calculates genome RT correlation with the file produced by `countRT` as input
+5. `plotGenomeRTRepCor` calculates genome RT correlation with the file produced by `countRT` as input
 
 	```
 	icSHAPE-pipe plotGenomeRTRepCor -i countRT.txt -o report.pdf --col1 4 --col2 6 --winSize window_size
 	```
 	
-	It calculates RT correlation in each window in two replicates and produces a PDF report like this:
-	<center><img src="images/RTreplicates.png" width=300 /></center>
+	It calculates RT correlation in each window in two replicates and produces a PDF report like this: <br>
+	<img src="images/RTreplicates.png" width=300 />
 
-5. `combine_gTab_SHAPE` and `plotGenomeSHAPERepCor` are used to calculate genome SHAPE correlation
+6. `combine_gTab_SHAPE` and `plotGenomeSHAPERepCor` are used to calculate genome SHAPE correlation
 
 	```
 	icSHAPE-pipe combine_gTab_SHAPE input_1.gTab input_2.gTab output.txt
 	icSHAPE-pipe plotGenomeSHAPERepCor -i output.txt -o report.pdf --winSize window_size
 	```
 	
-	It calculate SHAPE correlation in each window in two replicates. And produce a PDF report like this:
-	<center><img src="images/SHAPEreplicates.png" width=300 /></center>
+	It calculate SHAPE correlation in each window in two replicates. And produce a PDF report like this: <br>
+	<img src="images/SHAPEreplicates.png" width=300 />
 
-6. `evaluateSHAPE` calculates AUC of icSHAPE score and structure.
+7. `evaluateSHAPE` calculates AUC of icSHAPE score and structure.
 
 	```
 	icSHAPE-pipe evaluateSHAPE -i 18S_rRNA_shape.out -s 18S_rRNA.dot -o report.pdf
 	```
 	It will generate a PDF image to report the AUC and ROC of SHAPE.
+
+## Improvement
+
+<table>
+
+<tr>
+	<th>RNA</th>
+	<th>Data</th>
+	<th>Strategy</th>
+	<th>Parameter</th>
+	<th>AUC</th>
+</tr>
+<tr>
+	<td>18S</td>
+	<td>HEK293 (PARIS,2016,Cell)</td>
+	<td>icSHAPE-old</td>
+	<td>Default: substract factor: 0.25</td>
+	<td style="color:red;">0.67</td>
+</tr>
+<tr>
+	<td>18S</td>
+	<td>HEK293 (PARIS,2016,Cell)</td>
+	<td>icSHAPE-pipe</td>
+	<td>window: 200nt; substract factor: 0.25</td>
+	<td style="color:green;">0.76</td>
+</tr>
+<tr>
+	<td>28S</td>
+	<td>HEK293 (PARIS,2016,Cell)</td>
+	<td>icSHAPE-old</td>
+	<td>Default: substract factor: 0.25</td>
+	<td style="color:red;">0.61</td>
+</tr>
+<tr>
+	<td>28S</td>
+	<td>HEK293 (PARIS,2016,Cell)</td>
+	<td>icSHAPE-pipe</td>
+	<td>window: 200nt; substract factor: 0.25</td>
+	<td style="color: green;">0.75</td>
+</tr>
+
+</table>
 
 ## Authors
 

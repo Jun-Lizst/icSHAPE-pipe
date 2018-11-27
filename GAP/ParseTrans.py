@@ -115,11 +115,11 @@ def getTransIParser(genomeCoorBedFile, showAttr=True, verbose=True, remove_tid_v
     while line:
         arr = line.strip().split('\t')
         (Chr, Start, End, Strand, GeneName_GeneID, TransID, GeneType, Exon) = arr[:8]
-        if remove_tid_version: TransID = ".".join(TransID.split('.')[:-1])
+        if remove_tid_version and '.' in TransID: TransID = ".".join(TransID.split('.')[:-1])
         Exon = format_Exon_UTR_str(Exon, Strand)
         try:
             (GeneName, GeneID) = (GeneName_GeneID.split('=')[0], GeneName_GeneID.split('=')[1])
-            if remove_gid_version:
+            if remove_gid_version and '.' in GeneID:
                 GeneID = ".".join(GeneID.split('.')[:-1])
         except:
             print >>sys.stderr, GeneName_GeneID

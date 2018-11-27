@@ -225,7 +225,7 @@ class NCBI_Genome_Class(object):
             else:
                 NCToChr[pureChrID] = 'chrM'
         return NCToChr
-    def __utr_String(self, exonString, cdsString, strand):
+    def __utr_String(self, exonString, cdsString, strand, verbose=True):
         """ 从 exonString 中解析出 cdsString
         测试：
             "plus strand"
@@ -283,9 +283,10 @@ class NCBI_Genome_Class(object):
                 elif exon_start == cdsList[0][0]:
                     break
                 else:
-                    print 'Impossible Event 1'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 1'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             for (exon_start, exon_end) in exonList[::-1]:
@@ -297,9 +298,10 @@ class NCBI_Genome_Class(object):
                 elif exon_end == cdsList[-1][1]:
                     break
                 else:
-                    print 'Impossible Event 2'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 2'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             utr_3.reverse()
@@ -313,9 +315,10 @@ class NCBI_Genome_Class(object):
                 elif exon_end == cdsList[0][1]:
                     break
                 else:
-                    print 'Impossible Event 3'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 3'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             for (exon_start, exon_end) in exonList[::-1]:
@@ -327,16 +330,17 @@ class NCBI_Genome_Class(object):
                 elif exon_start == cdsList[-1][0]:
                     break
                 else:
-                    print 'Impossible Event 4'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 4'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             utr_3.reverse()
         utr_5_string = ','.join([str(item[0])+'-'+str(item[1]) for item in utr_5])
         utr_3_string = ','.join([str(item[0])+'-'+str(item[1]) for item in utr_3])
         return utr_5_string, utr_3_string
-    def __formatRNALine(self, rna_ID, pureTransID=False):
+    def __formatRNALine(self, rna_ID, pureTransID=False, verbose=True):
         """格式化一个转录本的信息
         测试
             print __formatRNALine('rna192', True) # plus strand mRMA
@@ -388,7 +392,7 @@ class NCBI_Genome_Class(object):
             cdsString = ','.join(cdsList)
             exonString = ','.join(exonsList)
             try:
-                (utr_5_string, utr_3_string) = self.__utr_String(exonString, cdsString, Strand)
+                (utr_5_string, utr_3_string) = self.__utr_String(exonString, cdsString, Strand, verbose=verbose)
             except:
                 print 'Skip this transcript: ',rna_ID
                 print 'exonString:',exonString
@@ -400,7 +404,7 @@ class NCBI_Genome_Class(object):
         formatString = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (Chr, Start, End, Strand, GeneID, TransID, GeneType, ','.join(exonsList))
         if utrString: formatString += '\t'+utrString
         return formatString
-    def write_genomeCoor_bed(self, genomeCoorFileName, onlyChr=False, pureTransID=True):
+    def write_genomeCoor_bed(self, genomeCoorFileName, onlyChr=False, pureTransID=True, verbose=True):
         """ 把GFF3格式的注释转成基因组坐标的bed文件
             chr1    975205  981029  -       ENSG00000187642 ENST00000433179 protein_coding  978881-981029,976499-976624,975205-976269       975205-976171
         测试：
@@ -415,7 +419,7 @@ class NCBI_Genome_Class(object):
         tmpFileName = '/tmp/genomeCoor'+str(random.randint(1,1000))+'.bed'
         TMP = open(tmpFileName, 'w')
         for rna_ID in self.gff3_container['RNA']:
-            TranscriptLine = self.__formatRNALine(rna_ID, pureTransID=pureTransID)
+            TranscriptLine = self.__formatRNALine(rna_ID, pureTransID=pureTransID, verbose=verbose)
             if TranscriptLine == '': continue
             if onlyChr:
                 if TranscriptLine.startswith('chr'):
@@ -494,6 +498,7 @@ class NCBI_Genome_Class(object):
                     continue
             print >>OUT, '>%s\t%s\n%s' % (TransID, RNA_info, SeqFunc.cutSeq(RNA_seq))
         OUT.close()
+    
     """
     下面是static类型的方法
     """

@@ -82,7 +82,23 @@ icSHAPE-pipe sam2tab -in 4.mapGenome/D2.sorted.bam -out 6.sam2tab/D2.tab
 icSHAPE-pipe sam2tab -in 4.mapGenome/N1.sorted.bam -out 6.sam2tab/N1.tab
 icSHAPE-pipe sam2tab -in 4.mapGenome/N2.sorted.bam -out 6.sam2tab/N2.tab
 
-######## 7. Calculate SHAPE score
+######## 7. Train parameters
+
+# prepare rRNA
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/D1.chr22.sam -out 10.quality_control/D1.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/D2.chr22.sam -out 10.quality_control/D2.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/N1.chr22.sam -out 10.quality_control/N1.rRNA.tab
+icSHAPE-pipe sam2tab -in 3.rem_rRNA/N2.chr22.sam -out 10.quality_control/N2.rRNA.tab
+
+# train parameters
+icSHAPE-pipe trainParameter \
+    -d rRNA/human_18S.dot \
+    -D 10.quality_control/D1.rRNA.tab,10.quality_control/D2.rRNA.tab \
+    -N 10.quality_control/N1.rRNA.tab,10.quality_control/N2.rRNA.tab \
+    -o 10.quality_control/train_parameters_18S.pdf \
+    -s rRNA/human_rRNA_tRNA_mtRNA.len
+
+######## 8. Calculate SHAPE score
 
 icSHAPE-pipe calcSHAPE \
     -D 6.sam2tab/D1.tab,6.sam2tab/D2.tab \
@@ -91,7 +107,7 @@ icSHAPE-pipe calcSHAPE \
     -ijf index/sjdbList.fromGTF.out.tab \
     -out 7.calcGenomeSHAPE/shape.gTab
 
-######## 8. generate transcriptome-based SHAPE score and RTBD
+######## 9. generate transcriptome-based SHAPE score and RTBD
 
 icSHAPE-pipe genSHAPEToTransSHAPE \
     -i 7.calcGenomeSHAPE/shape.gTab \
@@ -100,7 +116,7 @@ icSHAPE-pipe genSHAPEToTransSHAPE \
     -s index/chrNameLength.txt \
     -r 5.rpkm/D1/isoforms.fpkm_tracking,5.rpkm/D2/isoforms.fpkm_tracking
 
-######## 9. Visualization
+######## 10. Visualization
 
 icSHAPE-pipe genSHAPEToBedGraph -i 7.calcGenomeSHAPE/shape.gTab -t TrtCont -o 9.bedGraph/ -c 200
 
@@ -183,12 +199,14 @@ icSHAPE-pipe calcSHAPE \
 icSHAPE-pipe combine_gTab_SHAPE 10.quality_control/shape_rep1.gTab 10.quality_control/shape_rep2.gTab 10.quality_control/shape_combine.txt
 icSHAPE-pipe plotGenomeSHAPERepCor -i 10.quality_control/shape_combine.txt -o 10.quality_control/shape_cor.pdf
 
-######## 5. Evaluate icSHAPE with known 18S structure
+######## 5. transcript-base SHAPE statistics
 
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/D1.chr22.sam -out 10.quality_control/D1.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/D2.chr22.sam -out 10.quality_control/D2.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/N1.chr22.sam -out 10.quality_control/N1.rRNA.tab
-icSHAPE-pipe sam2tab -in 3.rem_rRNA/N2.chr22.sam -out 10.quality_control/N2.rRNA.tab
+icSHAPE-pipe transSHAPEStatistics \
+    -i 8.transSHAPE/shape.out \
+    -g GTF/chr22.genomeCoor.bed \
+    -o 10.quality_control/transSHAPE_statistics.pdf
+
+######## 6. Evaluate icSHAPE with known 18S structure
 
 icSHAPE-pipe calcSHAPE \
     -D 10.quality_control/D1.rRNA.tab,10.quality_control/D2.rRNA.tab \

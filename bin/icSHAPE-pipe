@@ -32,6 +32,7 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
     mapGenome                   Map to genome with STAR
     calcFPKM                    Calculate transcript FPKM with cufflinks
     sam2tab                     Convert sam or bam to a tab-separated file (.tab)
+    trainParameter              Train best window size and substract factors based on known structures (long time..., default parameters are recomended)
     calcSHAPE                   Calculate SHAPE score with sliding window strategy to 
                                 produce a genome-based tab-separated file (.gtab)
     
@@ -43,6 +44,7 @@ icSHAPE-pipe - Pipeline to calculate icSHAPE score in genome
     [Quanlity control]
     readDistributionStatistic   Statistic the number of reads are mapped
     samStatistics               Statistic where the reads mapped to with sam or bam file
+    transSHAPEStatistics        Statistics the RNA distribution of transcript-based SHAPE
     countRT                     Count RT and BD of each replicates
     plotGenomeRTRepCor          Plot a boxplot to show how well the replicate RT
     combine_gTab_SHAPE          Combine two replicate .gTab file
@@ -140,6 +142,10 @@ def main():
         CMD = "%s/Functions/sam2tab " % (dirname, )+options
         os.system(CMD)
     
+    elif mode == 'trainParameter':
+        CMD = "python %s/Functions/trainParameter.py " % (dirname, )+options
+        os.system(CMD)
+    
     elif mode == 'calcSHAPE':
         CMD = "%s/Functions/calc_sliding_shape TrtCont " % (dirname, )+options
         os.system(CMD)
@@ -162,6 +168,10 @@ def main():
     
     elif mode == 'samStatistics':
         CMD = "python %s/Functions/samStatistics.py " % (dirname, )+options
+        os.system(CMD)
+    
+    elif mode == 'transSHAPEStatistics':
+        CMD = "python %s/Functions/transSHAPEStatistics.py " % (dirname, )+options
         os.system(CMD)
     
     elif mode == 'countRT':

@@ -129,7 +129,7 @@ class GENCODE_Genome_Class(object):
                 gtf_container[ 'CDS' ][ attributes['transcript_id'] ] = gtf_container[ 'CDS' ].get( attributes['transcript_id'], []) + [attributes]
             line = IN.readline()
         return gtf_container
-    def __utr_String(self, exonString, cdsString, strand):
+    def __utr_String(self, exonString, cdsString, strand, verbose=True):
         """ 从 exonString 中解析出 cdsString
         测试：
             "plus strand"
@@ -187,9 +187,10 @@ class GENCODE_Genome_Class(object):
                 elif exon_start == cdsList[0][0]:
                     break
                 else:
-                    print 'Impossible Event 1'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 1'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             for (exon_start, exon_end) in exonList[::-1]:
@@ -201,9 +202,10 @@ class GENCODE_Genome_Class(object):
                 elif exon_end == cdsList[-1][1]:
                     break
                 else:
-                    print 'Impossible Event 2'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 2'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             utr_3.reverse()
@@ -217,9 +219,10 @@ class GENCODE_Genome_Class(object):
                 elif exon_end == cdsList[0][1]:
                     break
                 else:
-                    print 'Impossible Event 3'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 3'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             for (exon_start, exon_end) in exonList[::-1]:
@@ -231,16 +234,17 @@ class GENCODE_Genome_Class(object):
                 elif exon_start == cdsList[-1][0]:
                     break
                 else:
-                    print 'Impossible Event 4'
-                    print 'exonString:',exonString
-                    print 'cdsString:',cdsString
+                    if verbose:
+                        print 'Impossible Event 4'
+                        print 'exonString:',exonString
+                        print 'cdsString:',cdsString
                     raise Exception("Impossible Event 1")
                     break
             utr_3.reverse()
         utr_5_string = ','.join([str(item[0])+'-'+str(item[1]) for item in utr_5])
         utr_3_string = ','.join([str(item[0])+'-'+str(item[1]) for item in utr_3])
         return utr_5_string, utr_3_string
-    def __formatRNALine(self, rna_ID, pureTransID=False, pureGeneID=False):
+    def __formatRNALine(self, rna_ID, pureTransID=False, pureGeneID=False, verbose=True):
         """格式化一个转录本的信息
         测试:
             print __formatRNALine(hg19_gtf_container, 'ENST00000585215.5_1', False, False) # plus strand mRMA
@@ -277,19 +281,20 @@ class GENCODE_Genome_Class(object):
             cdsString = ','.join(cdsList)
             exonString = ','.join(exonsList)
             try:
-                (utr_5_string, utr_3_string) = self.__utr_String(exonString, cdsString, Strand)
+                (utr_5_string, utr_3_string) = self.__utr_String(exonString, cdsString, Strand, verbose=verbose)
             except:
-                print 'Skip this transcript: ',rna_ID
-                print 'exonString:',exonString
-                print 'cdsString:',cdsString
-                print 'strand:',Strand
-                print '\n'
+                if verbose:
+                    print 'Skip this transcript: ',rna_ID
+                    print 'exonString:',exonString
+                    print 'cdsString:',cdsString
+                    print 'strand:',Strand
+                    print '\n'
                 return ''
             utrString = (utr_5_string+','+utr_3_string).strip(',')
         formatString = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (Chr, Start, End, Strand, GeneID, TransID, GeneType, ','.join(exonsList))
         if utrString: formatString += '\t'+utrString
         return formatString
-    def write_genomeCoor_bed(self, genomeCoorFileName, onlyChr=False, pureTransID=False, pureGeneID=False):
+    def write_genomeCoor_bed(self, genomeCoorFileName, onlyChr=False, pureTransID=False, pureGeneID=False, verbose=True):
         """ 把GTF格式的注释转成基因组坐标的bed文件
             chr1    975205  981029  -       ENSG00000187642 ENST00000433179 protein_coding  978881-981029,976499-976624,975205-976269       975205-976171
         测试：
@@ -305,7 +310,7 @@ class GENCODE_Genome_Class(object):
         TMP = open(tmpFileName, 'w')
         for rna_ID in self.gtf_container['RNA']:
             try:
-                TranscriptLine = self.__formatRNALine(rna_ID, pureTransID=pureTransID, pureGeneID=pureGeneID)
+                TranscriptLine = self.__formatRNALine(rna_ID, pureTransID=pureTransID, pureGeneID=pureGeneID, verbose=verbose)
             except No_GeneName_Error:
                 continue
             if TranscriptLine == '': continue
@@ -392,11 +397,6 @@ class GENCODE_Genome_Class(object):
             gene_name = self.gtf_container['gene'][gene_ID]['gene_name']
             print >>OUT, '>%s\t%s\t%d\t%s:%d-%d:%s\n%s' % (GeneID, gene_name, len(gene_seq), Chr, start, end, strand, SeqFunc.cutSeq(gene_seq))
         OUT.close()
-
-
-
-
-
 
 
 

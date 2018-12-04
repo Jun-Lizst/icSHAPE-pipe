@@ -25,26 +25,11 @@ Command:
 # what it is:
  -g         genome annotation
  -o         output file prefix
- -s         <gencode/ncbi> data source
+ -s         <gencode/emsembl/ncbi> data source
 
 # more options [ Strongly Recommend Default Parameters ]
- --removeTransVersion <yes/no>
-            ENST00000488147.1 => ENST00000488147 (default: no)
- --removeGeneVersion <yes/no>
-            ENSG00000227232.5 => ENSG00000227232 (default: no)
- --removeScaffold <yes/no>
-            remove KI270734.1... (default: no)
+
  --genome   fetch transcriptome from genome file
- --genome_gff_same_chr <yes/no>
-            GFF3 file:
-                NC_000001.11    RefSeq  region  1       248956422       .       +       .       ID=id0;Dbxref=taxon:9606;Name=1;chromosome=1;gbkey=Src;genome=chromosome;mol_type=genomic DNA
-            if genome file:
-                    >NC_000001.11
-            then yes
-            if genome file:
-                    >chr1
-            then no
-            (default: no)
 
 """ % (sys.argv[0], )
 

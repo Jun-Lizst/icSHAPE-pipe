@@ -115,7 +115,7 @@ def main():
         --outStd BAM_Unsorted > %s"
     
     CMD_sort_1 = "samtools sort -m 2G --threads %s %s -o %s"
-    CMD_sort_2 = "samtools view -h %s | grep -v \"MD:Z:0\"| samtools view --threads %s -bh | samtools sort -m 2G --threads %s -o %s"
+    CMD_sort_2 = "samtools view -h %s | grep -v \"MD:Z:0\"| samtools view --threads %s -bh - | samtools sort -m 2G --threads %s -o %s -"
     
     params = init()
     unsorted_bam = params['outPrefix'] + ".unsorted.bam"

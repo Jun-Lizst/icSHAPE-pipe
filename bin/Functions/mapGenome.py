@@ -29,6 +29,8 @@ mapGenome - Map reads to genome with STAR
                             Maximun mismatch to be allowed (default: 2)
   --noMut5              <None>
                             Remove reads with mutation at the first base in 5' (such as MD:Z:0A)
+  --noWithin            <None>
+                            Unmapped reads not within the sam file (default: within)
 
 \x1b[1mVERSION:\x1b[0m
     %s
@@ -41,9 +43,9 @@ mapGenome - Map reads to genome with STAR
 def init():
     import getopt
     
-    Params = { 'inFastq': None, 'outPrefix': None, 'index': None, 'threads': 1, 'maxMMap': 1, 'maxMisMatch': 2, 'noMut5':False }
+    Params = { 'inFastq': None, 'outPrefix': None, 'index': None, 'threads': 1, 'maxMMap': 1, 'maxMisMatch': 2, 'noMut5':False, 'noWithin': False }
     
-    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:x:p:', ['maxMMap=', 'maxMisMatch=', 'noMut5'])
+    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:x:p:', ['maxMMap=', 'maxMisMatch=', 'noMut5', 'noWithin'])
     
     for op, value in opts:
         if op == '-h':
@@ -57,7 +59,7 @@ def init():
         elif op == '-x':
             Params['index'] = os.path.abspath(value)
         elif op == '-p':
-            Params['adator'] = os.path.abspath(value)
+            Params['threads'] = int(value)
         
         elif op == '--maxMMap':
             Params['maxMMap'] = int(value)
@@ -65,6 +67,8 @@ def init():
             Params['maxMisMatch'] = int(value)
         elif op == '--noMut5':
             Params['noMut5'] = True
+        elif op == '--noWithin':
+            Params['noWithin'] = True
         
         else:
             print >>sys.stderr, "parameter Error: unrecognized parameter: "+op
@@ -103,7 +107,7 @@ def main():
         --outSJfilterOverhangMin 30 12 12 12 \
         --alignEndsType EndToEnd \
         --outSAMattributes All \
-        --outSAMunmapped Within \
+        --outSAMunmapped %s \
         --alignIntronMin 20 \
         --alignIntronMax 1000000 \
         --alignMatesGapMax 1000000 \
@@ -117,7 +121,10 @@ def main():
     unsorted_bam = params['outPrefix'] + ".unsorted.bam"
     sorted_bam = params['outPrefix'] + ".sorted.bam"
     
-    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], unsorted_bam)
+    if params['noWithin']: within = "None"
+    else: within = "Within"
+
+    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], within, unsorted_bam)
     CMD_sort_1 = CMD_sort_1 % (params['threads'], unsorted_bam, sorted_bam)
     CMD_sort_2 = CMD_sort_2 % (unsorted_bam, params['threads'], params['threads'], sorted_bam)
     

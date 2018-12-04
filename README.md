@@ -15,6 +15,7 @@ Python packages:
 * <b>pandas</b>: https://pypi.org/project/pandas/
 * <b>matplotlib</b>: https://pypi.org/project/matplotlib/
 * <b>seaborn</b>: https://seaborn.pydata.org
+* <b>sklearn</b>: https://scikit-learn.org/stable/
 
 <b>Bowtie2</b>: http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 
@@ -325,28 +326,58 @@ For better understand the usage of `icSHAPE-pipe`, we strongly recommend that yo
 	<td>HEK293 (PARIS,2016,Cell)</td>
 	<td>icSHAPE-old</td>
 	<td>Default: substract factor: 0.25</td>
-	<td style="color:red;">0.67</td>
+	<td style="color:red;">0.697</td>
 </tr>
 <tr>
 	<td>18S</td>
 	<td>HEK293 (PARIS,2016,Cell)</td>
 	<td>icSHAPE-pipe</td>
 	<td>window: 200nt; substract factor: 0.25</td>
-	<td style="color:green;">0.76</td>
+	<td style="color:green;">0.709</td>
 </tr>
 <tr>
 	<td>28S</td>
 	<td>HEK293 (PARIS,2016,Cell)</td>
 	<td>icSHAPE-old</td>
 	<td>Default: substract factor: 0.25</td>
-	<td style="color:red;">0.61</td>
+	<td style="color:red;">0.633</td>
 </tr>
 <tr>
 	<td>28S</td>
 	<td>HEK293 (PARIS,2016,Cell)</td>
 	<td>icSHAPE-pipe</td>
 	<td>window: 200nt; substract factor: 0.25</td>
-	<td style="color: green;">0.75</td>
+	<td style="color: green;">0.698</td>
+</tr>
+
+
+<tr>
+	<td>18S</td>
+	<td>mES (icSHAPE,2015,Nature)</td>
+	<td>icSHAPE-old</td>
+	<td>Default: substract factor: 0.25</td>
+	<td style="color:red;">0.686</td>
+</tr>
+<tr>
+	<td>18S</td>
+	<td>mES (icSHAPE,2015,Nature)</td>
+	<td>icSHAPE-pipe</td>
+	<td>window: 200nt; substract factor: 0.25</td>
+	<td style="color:green;">0.692</td>
+</tr>
+<tr>
+	<td>28S</td>
+	<td>mES (icSHAPE,2015,Nature)</td>
+	<td>icSHAPE-old</td>
+	<td>Default: substract factor: 0.25</td>
+	<td style="color:red;">0.628</td>
+</tr>
+<tr>
+	<td>28S</td>
+	<td>mES (icSHAPE,2015,Nature)</td>
+	<td>icSHAPE-pipe</td>
+	<td>window: 200nt; substract factor: 0.25</td>
+	<td style="color: green;">0.641</td>
 </tr>
 
 </table>

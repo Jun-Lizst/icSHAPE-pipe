@@ -7,6 +7,7 @@ import getopt
 import os
 import random
 import version
+import sklearn, sklearn.metrics
 import matplotlib.pyplot as plt
 
 Usage = """
@@ -110,10 +111,9 @@ def calc_shape_ROC(ss_code, shape_list, step=0.01):
     return ROC
 
 def calc_AUC(ROC):
-    area = 0.5*ROC[0][0]*ROC[0][1]
-    for idx in range(1, len(ROC)-1):
-        area += (ROC[idx+1][0]-ROC[idx][0]) * ROC[idx+1][1] + 0.5 * (ROC[idx+1][0]-ROC[idx][0]) * (ROC[idx+1][1]-ROC[idx][1])
-    return area
+    x = [it[0] for it in ROC]
+    y = [it[1] for it in ROC]
+    return sklearn.metrics.auc(x, y, reorder=False)
 
 def readDot(inFile):
     structure = {}

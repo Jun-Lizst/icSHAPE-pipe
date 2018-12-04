@@ -126,8 +126,8 @@ def PlotTransSHAPEStatistics(SHAPE, Parser, outPDF):
     ratio_list = count_valid_ratio(SHAPE)
     
     print "Plot figures..."
-    fig = plt.figure(figsize=(10, 10))
-    grids = GridSpec(3, 2)
+    fig = plt.figure(figsize=(14, 14))
+    grids = GridSpec(4, 3)
     
     #### Block 1
     plt.subplot(grids[0, 0], aspect=1)
@@ -135,11 +135,11 @@ def PlotTransSHAPEStatistics(SHAPE, Parser, outPDF):
     plt.title("Transcripts statistics", fontdict={'fontweight': 'bold'})
     
     #### Block 2
-    plt.subplot(grids[0, 1], aspect=1)
+    plt.subplot(grids[0, 1:], aspect=1)
     plt.axis('off')
     plt.axis('tight')
     cellColors = [ [it, it] for it in list(df_trans_element['color']) ]
-    table1 = plt.table(cellText=df_trans_element.loc[:, ('gtype','ratioText')].values, loc='center', cellLoc='left', colLabels=['geneType', 'ratio'], cellColours=cellColors)
+    table1 = plt.table(cellText=df_trans_element.loc[:, ('gtype','count')].values, loc='center', cellLoc='left', colLabels=['geneType', 'count'], cellColours=cellColors)
     cell_dict = table1.get_celld()
     for k in cell_dict:
         cell_dict[k].set_width(0.3)
@@ -152,11 +152,11 @@ def PlotTransSHAPEStatistics(SHAPE, Parser, outPDF):
     plt.title("Bases statistics", fontdict={'fontweight': 'bold'})
     
     #### Block 4
-    plt.subplot(grids[1, 1], aspect=1)
+    plt.subplot(grids[1, 1:], aspect=1)
     plt.axis('off')
     plt.axis('tight')
     cellColors = [ [it, it] for it in list(df_base_element['color']) ]
-    table2 = plt.table(cellText=df_base_element.loc[:, ('gtype','ratioText')].values, loc='center', cellLoc='left', colLabels=['geneType', 'ratio'], cellColours=cellColors)
+    table2 = plt.table(cellText=df_base_element.loc[:, ('gtype','count')].values, loc='center', cellLoc='left', colLabels=['geneType', 'count'], cellColours=cellColors)
     cell_dict = table2.get_celld()
     for k in cell_dict:
         cell_dict[k].set_width(0.3)
@@ -164,22 +164,219 @@ def PlotTransSHAPEStatistics(SHAPE, Parser, outPDF):
         cell_dict[k].set_linewidth(0.2)
     
     #### Block 5
-    plt.subplot(grids[2, :], aspect=1)
+    plt.subplot(grids[2, 0], aspect=1)
     cdf(ratio_list, color='black', topdown=True, label=None, plotMedian=True)
     plt.xlabel("Cover ratio")
     plt.ylabel("Sorted transcript")
     plt.title("Covered ratio of sorted transcripts")
     
-    plt.savefig(outPDF)
+    #### Block 7
+    ax = fig.add_subplot(grids[2, 1:])
+    
+    GINI_list, GINI_type = genetype_gini(SHAPE, Parser)
+    violin(ax, GINI_list, GINI_type, colors=["#C44E52"]*len(GINI_type), rem_ext=0)
+    ax.set_ylabel("Gini (Reactivity score)")
+    
+    #### Block 6
+    ax = fig.add_subplot(grids[3, :])
+    
+    start_codon, stop_codon = calc_period(SHAPE, Parser)
+    start = [ sum(it)/len(it) for it in start_codon ]
+    stop = [ sum(it)/len(it) for it in stop_codon ]
+    
+    ax.plot( range(1, 52), start, '-' )
+    ax.plot( range(61, 112), stop, '-' )
+    
+    ax.axvline(x=26, ymin=0, ymax=1, linewidth=1, color='gray')
+    ax.axvline(x=86, ymin=0, ymax=1, linewidth=1, color='gray')
+    ax.set_xticks([1, 26, 51, 61, 86, 111])
+    ax.set_xticklabels(['-25', 'start', '25', '-25', 'stop', '25'])
+    ax.set_xlabel("Nucleotide position")
+    ax.set_ylabel("Reactivity score")
+    
+    fig.savefig(outPDF)
+    grids.update(wspace=0.05, hspace=0.2)
     plt.close()
 
+#############################
+### Code for Gini calculation
+#############################
+
+def adjacent_values(vals, q1, q3):
+    import numpy
+    vals = sorted(vals)
+    
+    upper_adjacent_value = q3 + (q3 - q1) * 1.5
+    upper_adjacent_value = numpy.clip(upper_adjacent_value, q3, vals[-1])
+    
+    lower_adjacent_value = q1 - (q3 - q1) * 1.5
+    lower_adjacent_value = numpy.clip(lower_adjacent_value, vals[0], q1)
+    return lower_adjacent_value, upper_adjacent_value
 
 
+def set_axis_style(ax, labels):
+    import numpy
+    
+    ax.get_xaxis().set_tick_params(direction='out')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xticks(numpy.arange(1, len(labels) + 1))
+    ax.set_xticklabels(labels)
+    ax.set_xlim(0.25, len(labels) + 0.75)
+
+def violin(ax, data_list, labels, colors=None, rem_ext=0):
+    """
+    fig, axs = tools.plt.subplots(nrows=5, ncols=1, figsize=(6, 12), sharey=True)
+    
+    axs[0].set_title('smartSHAPE 1 ng')
+    axs[0].set_ylabel('smart SHAPE score')
+    data = [ [],[],[],[] ]
+    violin(axs[0], data, ['A', 'T', 'C', 'G'])
+    
+    fig.tight_layout()
+    fig.show()
+    """
+    import numpy
+    
+    if colors == None:
+        colors = ['#D43F3A'] * len(data_list)
+    else:
+        assert len(colors) == len(data_list)
+        colors = colors[::-1]
+    
+    if rem_ext:
+        assert 0.0 <= rem_ext <= 0.5
+        import copy
+        data_list = copy.deepcopy(data_list)
+        for idx in range(len(data_list)):
+            data_list[idx].sort()
+            remNum = int(len(data_list[idx]) * rem_ext)
+            start = remNum; end = len(data_list[idx]) - remNum
+            data_list[idx] = data_list[idx][start:end]
+    
+    parts = ax.violinplot(data_list, showmeans=False, showmedians=False, showextrema=False)
+    
+    for pc in parts['bodies']:
+        pc.set_facecolor(colors.pop())
+        pc.set_edgecolor('black')
+        pc.set_alpha(1)
+    
+    quartile1 = []; medians = []; quartile3 = []
+    for data in data_list:
+        quartile1.append( numpy.percentile(data, 25) )
+        medians.append( numpy.percentile(data, 50) )
+        quartile3.append( numpy.percentile(data, 75) )
+    
+    whiskers = numpy.array([
+        adjacent_values(sorted_array, q1, q3)
+        for sorted_array, q1, q3 in zip(data_list, quartile1, quartile3)])
+    
+    whiskersMin, whiskersMax = whiskers[:, 0], whiskers[:, 1]
+    
+    inds = numpy.arange(1, len(medians) + 1)
+    ax.scatter(inds, medians, marker='o', color='white', s=20, zorder=3)
+    ax.vlines(inds, quartile1, quartile3, color='k', linestyle='-', lw=8)
+    ax.vlines(inds, whiskersMin, whiskersMax, color='k', linestyle='-', lw=1)
+    
+    set_axis_style(ax, labels)
 
 
+def calcGINI(my_list, valid_cutoff=20):
+    def GINI(list_of_values):
+        length = len(list_of_values)
+        total = sum(list_of_values)
+        if total == 0: 
+            return None
+        Sorted_Array = sorted(list_of_values)
+        accum, giniB = 0, 0
+        for i in Sorted_Array:
+            accum += i
+            giniB += accum - i / 2.0
+        fair_area = accum * length / 2.0
+        return (fair_area - giniB) / fair_area
+    
+    floatArr = []
+    for item in my_list:
+        if item != 'NULL':
+            floatArr.append(float(item))
+    
+    if len(floatArr) > valid_cutoff:
+        return GINI(floatArr)
+    return None
 
 
+def genetype_gini(SHAPE, Parser):
+    GINI = { 'pseudogene':[], 'snoRNA':[], 'snRNA':[], 'miRNA':[], 'misc_RNA':[], 'mRNA':[], 'lncRNA': [], 'UTR5':[], 'CDS':[], 'UTR3': [] }
+    
+    for tid in SHAPE:
+        try:
+            ft = Parser.getTransFeature(tid)
+        except KeyError:
+            continue
+        gt = gene_type(ft['gene_type'])
+        if gt == 'other':
+            continue
+        
+        shape = SHAPE[tid]
+        if gt == 'mRNA' or gt == 'rRNA':
+            cds_s, cds_e = ft['cds_start'], ft['cds_end']
+            gini_5 = calcGINI(shape[:cds_s])
+            gini_cds = calcGINI(shape[cds_s:cds_e])
+            gini_3 = calcGINI(shape[cds_e:])
+            
+            if gini_5: GINI['UTR5'].append( gini_5 )
+            if gini_cds: GINI['CDS'].append( gini_cds )
+            if gini_3: GINI['UTR3'].append( gini_3 )
+        
+        gini = calcGINI(shape)
+        if gini: GINI[gt].append( gini )
+    
+    
+    GINI_type = ['mRNA', 'UTR5', 'CDS', 'UTR3', 'pseudogene', 'lncRNA', 'miRNA', 'snoRNA', 'misc_RNA']
+    new_GINI_type = ["mRNA", "5'UTR", 'CDS', "3'UTR", 'Pseudogene', 'lncRNA', 'miRNA', 'snoRNA', 'misc_RNA']
+    GINI_list = [ GINI[gt] for gt in GINI_type ]
+    for i in range(len(GINI_list)):
+        GINI_type[i] = new_GINI_type[i] + "\n("+str(len(GINI_list[i]))+")"
+        if len(GINI_list[i]) < 20:
+            GINI_list[i] = [0.5] * 20
+    
+    return GINI_list, GINI_type
 
 
+#############################
+### Code CDS period
+#############################
+
+def calc_period(SHAPE, Parser):
+    start_codon = []
+    stop_codon = []
+    
+    for i in range(51):
+        start_codon.append([])
+        stop_codon.append([])
+    
+    for tid in SHAPE:
+        try:
+            ft = Parser.getTransFeature(tid)
+        except KeyError:
+            continue
+        if gene_type(ft['gene_type']) == 'mRNA':
+            shape = SHAPE[tid]
+            le = ft['trans_len']
+            if le < 100: continue
+            cds_s, cds_e = ft['cds_start'], ft['cds_end']
+            for i in range( max(cds_s-25,0), min(cds_s+26,le) ):
+                if shape[i] != 'NULL':
+                    start_codon[ i-max(cds_s-25,0) ].append( float(shape[i]) )
+            for i in range( max(cds_e-25,0), min(cds_e+26,le) ):
+                if shape[i] != 'NULL':
+                    stop_codon[ i-max(cds_e-25,0) ].append( float(shape[i]) )
+    
+    for i in range(51):
+        if len(start_codon[i]) < 20:
+            start_codon[i] = [0.2] * 20
+        if len(stop_codon[i]) < 20:
+            stop_codon[i] = [0.2] * 20
+    
+    return start_codon, stop_codon
 
 

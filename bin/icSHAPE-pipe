@@ -80,6 +80,8 @@ def check_requirements():
     numpy = checkPythonMod("numpy")
     pandas = checkPythonMod("pandas")
     matplotlib = checkPythonMod("matplotlib")
+    seaborn = checkPythonMod("seaborn")
+    sklearn = checkPythonMod("sklearn")
     
     if not bowtie2:
         print >>sys.stderr, "\x1b[5;31;40m Warning: =====> bowtie2 is not in your PATH <===== \x1b[0m"
@@ -94,10 +96,14 @@ def check_requirements():
         print >>sys.stderr, "\x1b[5;31;40m Warning: =====> pysam package is not installed <===== \x1b[0m"
     if not numpy:
         print >>sys.stderr, "\x1b[5;31;40m Warning: =====> numpy package is not installed <===== \x1b[0m"
-    if not cufflinks:
-        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> cufflinks package is not installed <===== \x1b[0m"
+    if not pandas:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> pandas package is not installed <===== \x1b[0m"
     if not matplotlib:
         print >>sys.stderr, "\x1b[5;31;40m Warning: =====> matplotlib package is not installed <===== \x1b[0m"
+    if not seaborn:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> seaborn package is not installed <===== \x1b[0m"
+    if not sklearn:
+        print >>sys.stderr, "\x1b[5;31;40m Warning: =====> sklearn package is not installed <===== \x1b[0m"
 
 
 def main():

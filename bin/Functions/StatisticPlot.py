@@ -316,8 +316,11 @@ def genetype_gini(SHAPE, Parser):
         if gt == 'other':
             continue
         
+        if gt == 'rRNA':
+            continue
+        
         shape = SHAPE[tid]
-        if gt == 'mRNA' or gt == 'rRNA':
+        if gt == 'mRNA':
             cds_s, cds_e = ft['cds_start'], ft['cds_end']
             gini_5 = calcGINI(shape[:cds_s])
             gini_cds = calcGINI(shape[cds_s:cds_e])

@@ -112,7 +112,7 @@ def main():
         --alignIntronMax 1000000 \
         --alignMatesGapMax 1000000 \
         --alignSJDBoverhangMin 1 \
-        --outStd BAM_Unsorted > %s"
+        --outStd BAM_Unsorted"
     
     CMD_sort_1 = "samtools sort -m 2G --threads %s %s -o %s"
     CMD_sort_2 = "samtools view -h %s | grep -v \"MD:Z:0\"| samtools view --threads %s -bh - | samtools sort -m 2G --threads %s -o %s -"
@@ -123,8 +123,9 @@ def main():
     
     if params['noWithin']: within = "None"
     else: within = "Within"
-
-    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], within, unsorted_bam)
+    
+    if params['inFastq'].endswith(".gz"): CMD_1  += " --readFilesCommand zcat"
+    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], within) + " > " + unsorted_bam
     CMD_sort_1 = CMD_sort_1 % (params['threads'], unsorted_bam, sorted_bam)
     CMD_sort_2 = CMD_sort_2 % (unsorted_bam, params['threads'], params['threads'], sorted_bam)
     

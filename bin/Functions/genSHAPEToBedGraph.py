@@ -246,6 +246,7 @@ def smartSHAPE_mode_To_bedGraph(infile, outdir, min_cov=0):
     for line in open(infile):
         #if not line.startswith('chr'):
         #    continue
+        if line[0] == '@': continue
         data = line.strip().split()
         pos = int(data[2])
         N_RT, N_BD = int(data[3]), int(data[4])

@@ -24,6 +24,9 @@ starbuild - Build a STAR index
                             Provide a GTF file to build index
   -p                    <Int>
                             How many threads to use (default: 1)
+  --noscaffold          <None>
+                            Don't build index for scaffold, scaffolds are defined as 
+                            those chromosomes with id length > 6 and not startswith chr and NC_
 
 \x1b[1mVERSION:\x1b[0m
     %s
@@ -36,9 +39,9 @@ starbuild - Build a STAR index
 def init():
     import getopt
     
-    Params = { 'inFile': None, 'outDir': None, 'gtfFile':None, 'threads': 1 }
+    Params = { 'inFile': None, 'outDir': None, 'gtfFile': None, 'threads': 1, 'noscaffold': False }
     
-    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:p:', ['gtf='])
+    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:p:', ['gtf=', 'noscaffold'])
     
     for op, value in opts:
         if op == '-h':
@@ -54,6 +57,8 @@ def init():
             Params['gtfFile'] = os.path.abspath(value)
         elif op == '-p':
             Params['threads'] = int(value)
+        elif op == '--noscaffold':
+            Params['noscaffold'] = True
         
         else:
             print >>sys.stderr, "parameter Error: unrecognized parameter: "+op
@@ -71,6 +76,29 @@ def init():
     
     return Params
 
+def build_noscaffold_fasta(input_fa, output_fa, verbose=True):
+    OUT = open(output_fa, 'w')
+    write_cur_trans = False
+    removed_chr_list = []
+    for line in open(input_fa):
+        if line[0] == '>':
+            chrID = line[1:].split()[0]
+            if chrID.startswith('chr') or chrID.startswith('NC_') or len(chrID)<=6:
+                write_cur_trans = True
+                OUT.writelines(line)
+                if verbose:
+                    print >>sys.stderr, "Writing chromosome " + chrID + "..."
+            else:
+                write_cur_trans = False
+                removed_chr_list.append(chrID)
+        elif write_cur_trans:
+            OUT.writelines(line)
+    
+    if verbose:
+        print >>sys.stderr, "Warning: Removed scaffolds: "+ "\t".join(removed_chr_list)
+    
+    OUT.close()
+
 def count_fasta(inFasta):
     ref_num = 0
     base_num = 0
@@ -81,9 +109,17 @@ def count_fasta(inFasta):
             base_num += len(line) - 1
     return ref_num, base_num
 
-
 def main():
     params = init()
+    
+    if params['noscaffold']:
+        import random
+        randID = random.randint(100000,999999)
+        tmp_fa = "/tmp/tmp_genome_%s.fa" % (randID, )
+        print "Start build temp genome: "+tmp_fa
+        build_noscaffold_fasta(params['inFile'], tmp_fa, verbose=True)
+        params['inFile'] = tmp_fa
+    
     CMD = "STAR --runMode genomeGenerate --genomeFastaFiles %s --genomeDir %s --runThreadN %s" % (params['inFile'], params['outDir'], params['threads'])
     if params['gtfFile']:
         CMD += " --sjdbGTFfile " + params['gtfFile']
@@ -100,6 +136,9 @@ def main():
     
     print "Start to build STAR index:\n\t%s" % (CMD, )
     os.system(CMD)
+    
+    if params['noscaffold']:
+        os.remove(tmp_fa)
 
 if __name__ == "__main__":
     main()

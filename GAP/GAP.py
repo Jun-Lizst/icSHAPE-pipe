@@ -1,42 +1,56 @@
 #-*- coding:utf-8 -*-
 
-
 def init(genomeCoorBedFile, seqFn='', showAttr=True, rem_tVersion=False, rem_gVersion=False):
-    import ParseTrans
-    return ParseTrans.ParseTransClass(genomeCoorBedFile, seqFileName=seqFn, showAttr=showAttr, remove_tid_version=rem_tVersion, remove_gid_version=rem_gVersion)
-
-
-
-def initGTF(AnnotationGTF, genomeFile='', source='Gencode', showAttr=True, rem_tVersion=False, rem_gVersion=False, verbose=False):
     """
-    Build a parser from GTF or GFF3 file
-    source: Gencode or NCBI
-    """
+    genomeCoorBedFile   -- A *.genomeCoor.bed file produced by parseGTF.py
+    seqFn               -- Transcriptome fasta file produced by parseGTF.py
+    showAttr            -- Show an example
+    rem_tVersion        -- Remove version information. ENST000000022311.2 => ENST000000022311
+    rem_gVersion        -- Remove version information. ENSG000000022311.2 => ENSG000000022311
     
-    if source == 'Gencode':
-        import GENCODE_Genome
-        handle = GENCODE_Genome.GENCODE_Genome_Class(AnnotationGTF)
-        Parser = __build_parser(handle, genomeFn=genomeFile, source='Gencode', showAttr=showAttr, rem_tVersion=rem_tVersion, rem_gVersion=rem_gVersion, verbose=verbose)
+    Return a ParseTransClass object to parse genome
+    """
+    import ParseTrans
+    return ParseTrans.ParseTransClass(genomeCoorBedFile, seqFileName=seqFn, showAttr=showAttr, 
+                                        remove_tid_version=rem_tVersion, remove_gid_version=rem_gVersion)
+
+def initGTF(AnnotationGTF, source, genomeFile='', showAttr=True, rem_tVersion=False, rem_gVersion=False, verbose=False):
+    """
+    AnnotationGTF       -- Ensembl/Gencode GTF file or NCBI GFF3 file
+    genomeFile          -- Genome file
+    source              -- Gencode/Ensembl/NCBI
+    showAttr            -- Show an example
+    rem_tVersion        -- Remove version information. ENST000000022311.2 => ENST000000022311
+    rem_gVersion        -- Remove version information. ENSG000000022311.2 => ENSG000000022311
+    verbose             -- Show process information
+    
+    Return a ParseTransClass object to parse genome
+    """
+    import GTFParserFunc
+    
+    if source == 'Gencode' or source == 'Ensembl':
+        handle = GTFParserFunc.read_ensembl_gtf(AnnotationGTF)
+        Parser = __build_parser(handle, genomeFn=genomeFile, source=source, showAttr=showAttr, rem_tVersion=rem_tVersion, rem_gVersion=rem_gVersion, verbose=verbose)
     elif source == 'NCBI':
-        import NCBI_Genome
-        handle = NCBI_Genome.NCBI_Genome_Class(AnnotationGTF)
-        Parser = __build_parser(handle, genomeFn=genomeFile, source='NCBI', showAttr=showAttr, rem_tVersion=rem_tVersion, rem_gVersion=rem_gVersion, verbose=verbose)
+        handle = GTFParserFunc.read_ncbi_gff3(AnnotationGTF)
+        Parser = __build_parser(handle, genomeFn=genomeFile, source=source, showAttr=showAttr, rem_tVersion=rem_tVersion, rem_gVersion=rem_gVersion, verbose=verbose)
     else:
         print >>sys.stderr, "Error: source must be Gencode or NCBI"
     
     return Parser
 
 
-## Edit on 2018-11-10
 def __build_parser(GenomeHandler, genomeFn='', source='Gencode', showAttr=True, rem_tVersion=False, rem_gVersion=False, verbose=False):
     import random, os, commands, ParseTrans
+    import GTFParserFunc
+    
     rID = random.randint(10000, 99999)
     tmp_genomeCoor_file = "/tmp/tmp_%s_genomeCoor.bed" % (rID, )
     
-    if source == 'Gencode':
-        GenomeHandler.write_genomeCoor_bed(tmp_genomeCoor_file, onlyChr=False, pureTransID=rem_tVersion, pureGeneID=rem_gVersion, verbose=verbose)
+    if source == 'Gencode' or source == 'Ensembl':
+        GTFParserFunc.write_gtf_genomeCoor_bed(GenomeHandler, tmp_genomeCoor_file)
     elif source == 'NCBI':
-        GenomeHandler.write_genomeCoor_bed(tmp_genomeCoor_file, onlyChr=False, pureTransID=rem_tVersion, verbose=verbose)
+        GTFParserFunc.write_gff3_genomeCoor_bed(GenomeHandler, tmp_genomeCoor_file)
     else:
         print >>sys.stderr, "Error!"
         return None
@@ -44,7 +58,7 @@ def __build_parser(GenomeHandler, genomeFn='', source='Gencode', showAttr=True, 
     tmp_transcriptome_file = ""
     if genomeFn:
         tmp_transcriptome_file = "/tmp/tmp_%s_transcriptome.fasta" % (rID, )
-        GenomeHandler.writeTranscriptome(genomeFn, tmp_transcriptome_file, pureTransID=rem_tVersion, onlyChr=False, verbose=verbose)
+        GTFParserFunc.writeTranscriptome(tmp_genomeCoor_file, genomeFn, tmp_transcriptome_file, verbose=verbose, showAttr=showAttr)
     
     Parser = ParseTrans.ParseTransClass(tmp_genomeCoor_file, seqFileName=tmp_transcriptome_file, showAttr=showAttr, remove_tid_version=rem_tVersion, remove_gid_version=rem_gVersion)
     

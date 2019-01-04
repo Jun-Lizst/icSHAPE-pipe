@@ -49,8 +49,8 @@ def binize_Trans(Parser, bw=100000):
     "把基因组上的区域分段，加速查找过程。bw越小，占内存越高，越快"
     def statisticPsuedoChrSize(Parser):
         ChrLen = {}
-        for trans_id in Parser.GAPer:
-            RNA = Parser.GAPer[trans_id]
+        for trans_id in Parser.TransIParser:
+            RNA = Parser.TransIParser[trans_id]
             Chr = RNA['chr']
             End = int(RNA['end'])
             try:
@@ -65,8 +65,8 @@ def binize_Trans(Parser, bw=100000):
         count = int( chr_size[Chr]/bw ) + 1
         for idx in range(count):
             Bin[Chr]['+'][idx] = []; Bin[Chr]['-'][idx] = []
-    for trans_id in Parser.GAPer:
-        RNA = Parser.GAPer[trans_id]
+    for trans_id in Parser.TransIParser:
+        RNA = Parser.TransIParser[trans_id]
         Chr = RNA['chr']
         Strand = RNA['strand']
         Start = int( int(RNA['start']) / bw )
@@ -88,7 +88,7 @@ def genomeRange2TransCoor(TransBin, Parser, Chr, Start, End, Strand, bw=100000):
                 checkedTrans.append(trans_id)
             else:
                 continue
-            RNA = Parser.GAPer[trans_id]
+            RNA = Parser.TransIParser[trans_id]
             if End < int(RNA['start']) or Start > int(RNA['end']):
                 continue
             exonArray = exonstr2exonlist(RNA['exon_str'])
@@ -147,7 +147,7 @@ def genomeCoor2transCoor(TransBin, Parser, Chr, Start, End, Strand, pureTransID=
 
 def transCoor2genomeCoor(Parser, TransID, Pos):
     if Pos <= 0: raise out_of_range()
-    RNA = Parser.GAPer[TransID]
+    RNA = Parser.TransIParser[TransID]
     if Pos > Parser.getTransFeature(TransID)['trans_len']: raise out_of_range()
     exon_list = exonstr2exonlist(RNA['exon_str'])
     Strand = RNA['strand']

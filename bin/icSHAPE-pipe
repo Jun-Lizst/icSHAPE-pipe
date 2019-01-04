@@ -121,7 +121,7 @@ def main():
         os.system(CMD)
     
     elif mode == 'parseGTF':
-        CMD = "parseBedFromGTF.py "+options
+        CMD = "parseGTF.py "+options
         os.system(CMD)
     
     elif mode == 'readcollapse':

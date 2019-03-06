@@ -58,10 +58,10 @@ icSHAPE-pipe trim -i 1.readCollapse/N2.chr22.fastq -o 2.trim/N2.chr22.fastq -l 1
 
 ######## 3. Remove rRNA
 
-icSHAPE-pipe cleanFq -i 2.trim/D1.chr22.fastq -o 3.rem_rRNA/D1.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode End_to_End --sam 3.rem_rRNA/D1.chr22.sam
-icSHAPE-pipe cleanFq -i 2.trim/D2.chr22.fastq -o 3.rem_rRNA/D2.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode End_to_End --sam 3.rem_rRNA/D2.chr22.sam
-icSHAPE-pipe cleanFq -i 2.trim/N1.chr22.fastq -o 3.rem_rRNA/N1.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode End_to_End --sam 3.rem_rRNA/N1.chr22.sam
-icSHAPE-pipe cleanFq -i 2.trim/N2.chr22.fastq -o 3.rem_rRNA/N2.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode End_to_End --sam 3.rem_rRNA/N2.chr22.sam
+icSHAPE-pipe cleanFq -i 2.trim/D1.chr22.fastq -o 3.rem_rRNA/D1.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode EndToEnd --sam 3.rem_rRNA/D1.chr22.sam
+icSHAPE-pipe cleanFq -i 2.trim/D2.chr22.fastq -o 3.rem_rRNA/D2.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode EndToEnd --sam 3.rem_rRNA/D2.chr22.sam
+icSHAPE-pipe cleanFq -i 2.trim/N1.chr22.fastq -o 3.rem_rRNA/N1.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode EndToEnd --sam 3.rem_rRNA/N1.chr22.sam
+icSHAPE-pipe cleanFq -i 2.trim/N2.chr22.fastq -o 3.rem_rRNA/N2.chr22.fastq -x rRNA/human_rRNA_tRNA_mtRNA -p 20 --mode EndToEnd --sam 3.rem_rRNA/N2.chr22.sam
 
 ######## 4. Map to genome
 

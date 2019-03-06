@@ -26,45 +26,75 @@ class Fasta
 public:
     enum STRAND{ POSITIVE, NEGATIVE };
 
+    /* 
+    Constract a Fasta sequence
+    fasta_file_name     -- Input fasta file name
+    strict              -- If true, raise Unexpected_Error when duplicate sequences are found
+    */
     Fasta(const string &fasta_file_name, bool strict = false);
     
+    /*
+    Return the raw chrID list
+    */
     StringArray keys() const;
-    MapStringuLONG lens() const;
-    uLONG len(const string &key) const;
-    uLONG size() const;
-    const string &seq(const string &key) const;
-    const string &annotation(const string &key) const;
-    string seq_frag(const string &key, uLONG start, uLONG len=string::npos, STRAND strand=POSITIVE) const;
-    bool has(const string &key) const { return sequence.find(key) != sequence.cend(); }
-    //bool has_annotation(const string &key) const { return sequence.find(key) != sequence.cend(); }
 
+    /*
+    Return a map of raw chrID => chrLen
+    */
+    MapStringuLONG lens() const;
+    
+    /*
+    Return the length of a given chrID
+    key                 -- The chrID
+    */
+    uLONG len(const string &key) const;
+
+    /*
+    Return the number of sequence
+    */
+    uLONG size() const;
+
+    /*
+    Return the sequence of given chrID
+    key                 -- The chrID
+    */
+    const string &seq(const string &key) const;
+
+    /*
+    Return the annotation of given chrID
+    key                 -- The chrID
+    */
+    const string &annotation(const string &key) const;
+
+    /*
+    Return a fragment of the sequence of given chrID
+    key                 -- The chrID
+    start               -- The start position, 0-based
+    len                 -- The sub-sequence length
+    strand              -- Strand
+    */
+    string seq_frag(const string &key, uLONG start, uLONG len=string::npos, STRAND strand=POSITIVE) const;
+
+    /*
+    Test if a chrID is in the Fasta
+    key                 -- The chrID
+    */
+    bool has(const string &key) const { return sequence.find(key) != sequence.cend(); }
+    
+    // Iterators
     MapStringString::const_iterator cbegin() const { return sequence.cbegin(); }
     MapStringString::const_iterator cend() const { return sequence.cend(); }
     MapStringString::iterator begin(){ return sequence.begin(); }
     MapStringString::iterator end(){ return sequence.end(); }
 
-    /*
-    static void test_this_class(const string &file_name)
-    {
-        using namespace std;
-
-        Fasta fasta(file_name);
-        MapStringuLONG seq_lens = fasta.lens();
-        StringArray seq_keys = fasta.keys();
-        cout << "Total " << fasta.size() << endl;
-        for(auto this_key: seq_keys)
-        {
-            cout << this_key << "\t" << seq_lens.at(this_key) << "\t" << fasta.annotation(this_key) << "\t";
-            cout << fasta.seq_frag(this_key, 0, 10) << "\n";
-        }
-    }
-    */
-
 private:
-    StringArray chr_ids; // keep the raw order of chr_ids
-    MapStringString sequence;
-    MapStringString sequence_annotation;
 
+    // The chrID list, keep the raw order
+    StringArray chr_ids;
+    // A map of chrID => sequence 
+    MapStringString sequence;
+    // A map of chrID => annotation
+    MapStringString sequence_annotation;
 };
 
 
@@ -110,4 +140,3 @@ int global_align(const string &a,
 
 }
 #endif
-

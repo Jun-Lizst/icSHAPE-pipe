@@ -9,11 +9,9 @@ Fasta::Fasta(const string &fasta_file_name, bool strict)
 {
     ifstream SEQ(fasta_file_name, ifstream::in);
     if(not SEQ){
-        //cerr << "Bad Seq File(can not be opened): " << fasta_file_name << endl;
         throw runtime_error( "Bad_Input_File: "+fasta_file_name );
     }
 
-    //seq.clear();
     string this_line; 
     string cur_seq;
     while(getline(SEQ, this_line))
@@ -35,8 +33,6 @@ Fasta::Fasta(const string &fasta_file_name, bool strict)
                     cerr << "Warning: " << "duplicate fatsa sequence: " << cur_seq << "; only preserve the last one" << endl;
                     sequence[cur_seq] = "";
                     sequence_annotation[cur_seq] = "";
-                    //chr_ids.erase(pos);
-                    //chr_ids.push_back(cur_seq);
                     continue;
                 }
             }
@@ -57,18 +53,12 @@ Fasta::Fasta(const string &fasta_file_name, bool strict)
         }
     }
 
-    //clog << "clog: " << sequence.size() << " sequences in total..." << endl;
     SEQ.close();
 }
+
 StringArray Fasta::keys() const
 {
     return chr_ids;
-    /*
-    StringArray key;
-    for(auto iter=sequence.cbegin(); iter!=sequence.cend(); iter++)
-        key.push_back(iter->first);
-    return key;
-    */
 }
 
 uLONG Fasta::len(const string &key) const
@@ -132,8 +122,7 @@ void load_amino_acid(MapStringT<Amino_Acid> &aa_vec, const string &file_name)
     IN.close();
 }
 
-void load_codon_map(MapStringString &codon_map, 
-        const string &file_name)
+void load_codon_map(MapStringString &codon_map, const string &file_name)
 {
     ifstream IN(file_name, ifstream::in);
     if(not IN)
@@ -352,5 +341,3 @@ int global_align(const string &a,
 }
 
 }
-
-

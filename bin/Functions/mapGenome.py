@@ -29,6 +29,8 @@ mapGenome - Map reads to genome with STAR
                             Maximun mismatch to be allowed (default: 2)
   --noMut5              <None>
                             Remove reads with mutation at the first base in 5' (such as MD:Z:0A)
+  --alignMode           <Local/EndToEnd>
+                            Mapping the reads to genome with end-to-end mode or local mode (default: EndToEnd)
   --noWithin            <None>
                             Unmapped reads not within the sam file (default: within)
 
@@ -43,9 +45,9 @@ mapGenome - Map reads to genome with STAR
 def init():
     import getopt
     
-    Params = { 'inFastq': None, 'outPrefix': None, 'index': None, 'threads': 1, 'maxMMap': 1, 'maxMisMatch': 2, 'noMut5':False, 'noWithin': False }
+    Params = { 'inFastq': None, 'outPrefix': None, 'index': None, 'threads': 1, 'maxMMap': 1, 'maxMisMatch': 2, 'noMut5':False, 'alignMode':'EndToEnd', 'noWithin': False }
     
-    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:x:p:', ['maxMMap=', 'maxMisMatch=', 'noMut5', 'noWithin'])
+    opts, args = getopt.getopt(sys.argv[1:], 'hi:o:x:p:', ['maxMMap=', 'maxMisMatch=', 'noMut5', 'alignMode=', 'noWithin'])
     
     for op, value in opts:
         if op == '-h':
@@ -67,6 +69,9 @@ def init():
             Params['maxMisMatch'] = int(value)
         elif op == '--noMut5':
             Params['noMut5'] = True
+        elif op == '--alignMode':
+            assert value in ("Local", "EndToEnd")
+            Params['noMut5'] = value
         elif op == '--noWithin':
             Params['noWithin'] = True
         
@@ -105,7 +110,7 @@ def main():
         --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
         --outSAMstrandField intronMotif \
         --outSJfilterOverhangMin 30 12 12 12 \
-        --alignEndsType EndToEnd \
+        --alignEndsType %s \
         --outSAMattributes All \
         --outSAMunmapped %s \
         --alignIntronMin 20 \
@@ -125,7 +130,7 @@ def main():
     else: within = "Within"
     
     if params['inFastq'].endswith(".gz"): CMD_1  += " --readFilesCommand zcat"
-    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], within) + " > " + unsorted_bam
+    CMD_1 = CMD_1 % (params['inFastq'], params['outPrefix'], params['index'], params['threads'], params['maxMMap'], params['maxMisMatch'], params['alignMode'], within) + " > " + unsorted_bam
     CMD_sort_1 = CMD_sort_1 % (params['threads'], unsorted_bam, sorted_bam)
     CMD_sort_2 = CMD_sort_2 % (unsorted_bam, params['threads'], params['threads'], sorted_bam)
     

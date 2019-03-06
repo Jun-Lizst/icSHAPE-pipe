@@ -175,7 +175,7 @@ def calc_shape_ROC(ss_code, shape_list, step=0.01):
 def calc_AUC(ROC):
     x = [it[0] for it in ROC]
     y = [it[1] for it in ROC]
-    return sklearn.metrics.auc(x, y, reorder=False)
+    return sklearn.metrics.auc(x, y)
 
 def init_rect(rowNum, colNum, rowNames=[], colNames=[], init_value=None):
     import pandas as pd
@@ -260,6 +260,8 @@ def main():
     
     print record
     record.to_csv(params['outReport']+'.csv')
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import seaborn as sns
     plt.figure(figsize=(15, 6))

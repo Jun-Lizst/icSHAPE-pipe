@@ -22,8 +22,8 @@ cleanFq - Removed reads mapped to a given genome with bowtie2
   More options:
   -p                    <Int>
                             How many threads to use (default: 1)
-  --mode                <Local/End_to_End>
-                            Local mode or end-to-end mode
+  --mode                <Local/EndToEnd>
+                            Mapping the reads to reference with end-to-end mode or local mode (default: Local)
   --sam                 <String>
                             Input a file to save the mapped reads
 
@@ -56,7 +56,7 @@ def init():
         elif op == '-p':
             Params['threads'] = int(value)
         elif op == '--mode':
-            assert value in ('Local', 'End_to_End')
+            assert value in ('Local', 'EndToEnd')
             Params['mode'] = value
         elif op == '--sam':
             Params['samFile'] = os.path.abspath(value)

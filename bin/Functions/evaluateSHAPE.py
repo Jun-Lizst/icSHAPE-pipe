@@ -8,6 +8,8 @@ import os
 import random
 import version
 import sklearn, sklearn.metrics
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 Usage = """
@@ -113,7 +115,7 @@ def calc_shape_ROC(ss_code, shape_list, step=0.01):
 def calc_AUC(ROC):
     x = [it[0] for it in ROC]
     y = [it[1] for it in ROC]
-    return sklearn.metrics.auc(x, y, reorder=False)
+    return sklearn.metrics.auc(x, y)
 
 def readDot(inFile):
     structure = {}

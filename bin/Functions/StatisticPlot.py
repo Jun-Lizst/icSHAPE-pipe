@@ -7,6 +7,8 @@ import getopt
 import os
 import re
 from matplotlib.gridspec import GridSpec
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import version

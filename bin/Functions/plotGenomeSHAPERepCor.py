@@ -7,6 +7,8 @@ import getopt
 import os
 import random
 import version
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 Usage = """

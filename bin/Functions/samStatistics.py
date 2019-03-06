@@ -4,6 +4,8 @@
 import os, commands, sys, pysam, numpy, getopt, random, re
 import GAP
 from matplotlib.gridspec import GridSpec
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import version

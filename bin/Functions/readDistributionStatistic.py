@@ -6,6 +6,8 @@ import numpy
 import getopt
 import os
 import version
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 Usage = """
